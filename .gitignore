@@ -1,2 +1,7 @@
 #IDEA
 /.idea
+
+composer.phar
+/vendor/
+
+ordbok.iml
