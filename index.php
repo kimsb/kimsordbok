@@ -193,11 +193,14 @@
 						}
 						$query = $_POST['query'];
 						$anagram = $_POST['anagram'];
-						
-						$mysql_host = "localhost";
-						$mysql_database = "ordbok";
-						$mysql_user = "kim";
-						$mysql_password = "kimmysqlordbok";
+
+                    $url = parse_url(getenv("DATABASE_URL"));
+
+
+                        $host = $url["host"];
+                        $username = $url["user"];
+                        $password = $url["pass"];
+                        $database = substr($url["path"], 1);
 						
 						$yesArray = array();
 						$maybeArray = array();
@@ -249,11 +252,9 @@
 						if ($blanks > 1) {
 							echo "<br><h3>Søket støtter maksimalt én blank (-)</h3>";
 						} else if (isset($_POST['query'])) {
-						
-							$mysql_connection = mysql_connect($mysql_host, $mysql_user, $mysql_password) or die(mysql_error());
-							mysql_query("SET NAMES 'utf8'");
-	
-							mysql_select_db($mysql_database, $mysql_connection);
+
+                            $db_conn = pg_connect("user=$username password=$password host=$host sslmode=require dbname=$database") or die('Could not connect: ' . pg_last_error());
+							//mysql_query("SET NAMES 'utf8'");
 						
 							//sjekke alle anagrammer
 							if (isset($_POST['anagram'])) {
@@ -325,9 +326,10 @@
 								
 								
 								$sql = 'SELECT * FROM dictionary WHERE alpha IN ("' . implode('","', $list) . '" COLLATE utf8_swedish_ci)';
-								$result = mysql_query($sql, $mysql_connection);
-								if (mysql_num_rows($result) !== 0) {
-									while($row = mysql_fetch_array($result)) {
+
+                                $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
+								if (pg_numrows($result) !== 0) {
+									while($row = pg_fetch_array($result)) {
 										if ($row[isValid]) {
 											$yesArray[] = str_replace($vowels, $replacements, $row[word]);
 										} else {
@@ -367,9 +369,9 @@
 											$likeQuery = str_replace("*", "%", mb_strtoupper($query, 'UTF-8'));
 											$queryNeedle = str_replace("*", "", mb_strtoupper($query, 'UTF-8'));
 											$sql = "SELECT * FROM dictionary WHERE word like '$likeQuery' COLLATE utf8_swedish_ci";
-											$result = mysql_query($sql, $mysql_connection);
-											if (mysql_num_rows($result) !== 0) {
-												while($row = mysql_fetch_array($result)) {
+											$result = pg_exec($db_conn, $sql);
+											if (pg_numrows($result) !== 0) {
+												while($row = pg_fetch_array($result)) {
 													if ($row[isValid]) {
 														if ($startsWithStar && endsWith($row[word], $queryNeedle) || 
 															$endsWithStar && startsWith($row[word], $queryNeedle) ||
@@ -395,11 +397,11 @@
 										}
 									} else { //sjekke et enkelt ord
 										$sql = "SELECT * FROM dictionary WHERE word = '$query' COLLATE utf8_swedish_ci";
-										$result = mysql_query($sql, $mysql_connection);
-										if (mysql_num_rows($result) === 0) {
+										$result = pg_exec($db_conn, $sql);
+										if (pg_numrows($result) === 0) {
 											echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
 										} else {
-											$row = mysql_fetch_array($result);
+											$row = pg_fetch_array($result);
 											if ($row[isValid]) {
 												echo "<br><div class='answer text-success'><i class='glyphicon glyphicon-ok-sign'></i><a class='answer-anchor' onclick='showButtonsWhenValid(this)'>$query</a><h3> ble funnet, HURRA!!!</h3></div>";
 											} else {
