@@ -254,7 +254,7 @@
 						} else if (isset($_POST['query'])) {
 
                             $db_conn = pg_connect("user=$username password=$password host=$host sslmode=require dbname=$database") or die('Could not connect: ' . pg_last_error());
-							//mysql_query("SET NAMES 'utf8'");
+							pg_query("SET NAMES 'utf8'");
 						
 							//sjekke alle anagrammer
 							if (isset($_POST['anagram'])) {
