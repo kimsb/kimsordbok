@@ -325,7 +325,7 @@
 								}
 								
 								
-								$sql = "SELECT * FROM dictionary WHERE alpha IN ('" . implode("','", $list) . "' COLLATE utf8_swedish_ci)";
+								$sql = "SELECT * FROM dictionary WHERE alpha IN ('" . implode("','", $list) . "'";
 
                                 $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 								if (pg_numrows($result) !== 0) {
@@ -368,8 +368,8 @@
 										if ($validQuery) {
 											$likeQuery = str_replace("*", "%", mb_strtoupper($query, 'UTF-8'));
 											$queryNeedle = str_replace("*", "", mb_strtoupper($query, 'UTF-8'));
-											$sql = "SELECT * FROM dictionary WHERE word like '$likeQuery' COLLATE utf8_swedish_ci";
-											$result = pg_exec($db_conn, $sql);
+											$sql = "SELECT * FROM dictionary WHERE word like '$likeQuery'";
+											$result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 											if (pg_numrows($result) !== 0) {
 												while($row = pg_fetch_array($result)) {
 													if ($row[isValid]) {
@@ -396,8 +396,8 @@
 											echo "invalid query (* in middle of word)";
 										}
 									} else { //sjekke et enkelt ord
-										$sql = "SELECT * FROM dictionary WHERE word = '$query' COLLATE utf8_swedish_ci";
-										$result = pg_exec($db_conn, $sql);
+										$sql = "SELECT * FROM dictionary WHERE word = '$query'";
+										$result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 										if (pg_numrows($result) === 0) {
 											echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
 										} else {
