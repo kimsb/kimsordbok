@@ -1,14 +1,15 @@
 <?php
 $word = $_POST['word'];
 
-$mysql_host = "localhost";
-$mysql_database = "ordbok";
-$mysql_user = "kim";
-$mysql_password = "kimmysqlordbok";
+$url = parse_url(getenv("DATABASE_URL"));
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"], 1);
 
-$mysql_connection = mysql_connect($mysql_host, $mysql_user, $mysql_password) or die(mysql_error());
-mysql_query("SET NAMES 'utf8'");
-mysql_select_db($mysql_database, $mysql_connection);
+$db_conn = pg_connect("user=$username password=$password host=$host sslmode=require dbname=$database") or die('Could not connect: ' . pg_last_error());
+
+pg_query("SET NAMES 'utf8'");
 
 function mbStringToArray($string)
 {
@@ -29,17 +30,17 @@ $alpha = implode($split);
 //lagrer originalstatus av ordet
 $sql = "SELECT * FROM dictionary WHERE word = '$word'";
 $status = "notPresent";
-$result = mysql_query($sql, $mysql_connection);
+$result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 if (mysql_num_rows($result) !== 0) {
-    $row = mysql_fetch_array($result);
-    if ($row[isValid]) {
+    $row = pg_fetch_array($result);
+    if ($row[isvalid] === 't') {
         $status = "valid";
     } else {
         $status = "uncertain";
     }
 }
-$sql = "INSERT IGNORE INTO beforeChanges (word, status) VALUES ('$word', '$status')";
-mysql_query($sql, $mysql_connection);
+$sql = "INSERT INTO beforeChanges (word, status) VALUES ('$word', '$status')";
+pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //lagrer endringen
 date_default_timezone_set("Europe/Oslo");
@@ -47,9 +48,9 @@ $timestamp = date("Y m j H:i:s");
 $username = ucfirst($_SERVER['REMOTE_USER']);
 $action = "added";
 $sql = "INSERT INTO changes (timestamp, username, action, word) VALUES ('$timestamp', '$username', '$action', '$word')";
-mysql_query($sql, $mysql_connection);
+pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //legger til i databasen
 $sql = "INSERT INTO dictionary (alpha, word, isValid) VALUES ('$alpha', '$word', 1)";
-mysql_query($sql, $mysql_connection);
+pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 ?>
