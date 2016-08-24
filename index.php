@@ -401,7 +401,7 @@
                                 echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
                             } else {
                                 $row = pg_fetch_array($result);
-                                echo $row[isValid];
+                                echo "<br><h3>isValid: $row[isValid]</h3>";
                                 if ($row[isValid] === 't') {
                                     echo "<br><div class='answer text-success'><i class='glyphicon glyphicon-ok-sign'></i><a class='answer-anchor' onclick='showButtonsWhenValid(this)'>$query</a><h3> ble funnet, HURRA!!!</h3></div>";
                                 } else {
