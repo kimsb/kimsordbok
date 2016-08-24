@@ -1,31 +1,31 @@
 <?php
 $word = $_POST['word'];
 
-$mysql_host = "localhost";
-$mysql_database = "ordbok";
-$mysql_user = "kim";
-$mysql_password = "kimmysqlordbok";
+$url = parse_url(getenv("DATABASE_URL"));
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"], 1);
 
-$mysql_connection = mysql_connect($mysql_host, $mysql_user, $mysql_password) or die(mysql_error());
-mysql_query("SET NAMES 'utf8'");
-mysql_select_db($mysql_database, $mysql_connection);
+$db_conn = pg_connect("user=$username password=$password host=$host sslmode=require dbname=$database") or die('Could not connect: ' . pg_last_error());
+pg_query("SET NAMES 'utf8'");
 
 $word = mb_strtoupper($word, 'UTF-8');
 
 //lagrer originalstatus av ordet
 $sql = "SELECT * FROM dictionary WHERE word = '$word'";
 $status = "notPresent";
-$result = mysql_query($sql, $mysql_connection);
-if (mysql_num_rows($result) !== 0) {
-    $row = mysql_fetch_array($result);
-    if ($row[isValid]) {
+$result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
+if (pg_numrows($result) !== 0) {
+    $row = pg_fetch_array($result);
+    if ($row[isvalid] === 't') {
         $status = "valid";
     } else {
         $status = "uncertain";
     }
 }
-$sql = "INSERT IGNORE INTO beforeChanges (word, status) VALUES ('$word', '$status')";
-mysql_query($sql, $mysql_connection);
+$sql = "INSERT INTO beforechanges (word, status) VALUES ('$word', '$status')";
+pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //lagrer endringen
 date_default_timezone_set("Europe/Oslo");
@@ -33,9 +33,9 @@ $timestamp = date("Y m j H:i:s");
 $username = ucfirst($_SERVER['REMOTE_USER']);
 $action = "disapproved";
 $sql = "INSERT INTO changes (timestamp, username, action, word) VALUES ('$timestamp', '$username', '$action', '$word')";
-mysql_query($sql, $mysql_connection);
+pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //oppdaterer databasen
-$sql = "UPDATE dictionary SET isValid=0 WHERE word = '$word'";
-mysql_query($sql, $mysql_connection);
+$sql = "UPDATE dictionary SET isvalid=false WHERE word = '$word'";
+pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 ?>
