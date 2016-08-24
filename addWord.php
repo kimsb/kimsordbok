@@ -51,6 +51,6 @@ $sql = "INSERT INTO changes (timestamp, username, action, word) VALUES ('$timest
 pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //legger til i databasen
-$sql = "INSERT INTO dictionary (alpha, word, isValid) VALUES ('$alpha', '$word', 1)";
+$sql = "INSERT INTO dictionary (alpha, word, isValid) VALUES ('$alpha', '$word', true)";
 pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 ?>
