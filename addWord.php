@@ -31,7 +31,7 @@ $alpha = implode($split);
 $sql = "SELECT * FROM dictionary WHERE word = '$word'";
 $status = "notPresent";
 $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
-if (mysql_num_rows($result) !== 0) {
+if (pg_numrows($result) !== 0) {
     $row = pg_fetch_array($result);
     if ($row[isvalid] === 't') {
         $status = "valid";
