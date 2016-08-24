@@ -325,7 +325,7 @@
 								}
 								
 								
-								$sql = "SELECT * FROM dictionary WHERE alpha IN ('" . implode("','", $list) . "'";
+								$sql = "SELECT * FROM dictionary WHERE alpha IN ('" . implode("','", $list) . "')";
 
                                 $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 								if (pg_numrows($result) !== 0) {
