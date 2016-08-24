@@ -39,7 +39,7 @@ if (pg_numrows($result) !== 0) {
         $status = "uncertain";
     }
 }
-$sql = "INSERT INTO beforeChanges (word, status) VALUES ('$word', '$status')";
+$sql = "INSERT INTO beforechanges (word, status) VALUES ('$word', '$status')";
 pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //lagrer endringen
