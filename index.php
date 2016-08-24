@@ -325,7 +325,7 @@
                     $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
                     if (pg_numrows($result) !== 0) {
                         while ($row = pg_fetch_array($result)) {
-                            if ($row[isValid]) {
+                            if ($row[isValid] === 't') {
                                 $yesArray[] = str_replace($vowels, $replacements, $row[word]);
                             } else {
                                 $maybeArray[] = str_replace($vowels, $replacements, $row[word]);
@@ -368,7 +368,7 @@
                                 $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
                                 if (pg_numrows($result) !== 0) {
                                     while ($row = pg_fetch_array($result)) {
-                                        if ($row[isValid]) {
+                                        if ($row[isValid] === 't') {
                                             if ($startsWithStar && endsWith($row[word], $queryNeedle) ||
                                                 $endsWithStar && startsWith($row[word], $queryNeedle) ||
                                                 ($startsWithStar && $endsWithStar && stristr($row[word], $queryNeedle))
@@ -401,7 +401,7 @@
                                 echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
                             } else {
                                 $row = pg_fetch_array($result);
-                                if ($row[isValid]) {
+                                if ($row[isValid] === 't') {
                                     echo "<br><div class='answer text-success'><i class='glyphicon glyphicon-ok-sign'></i><a class='answer-anchor' onclick='showButtonsWhenValid(this)'>$query</a><h3> ble funnet, HURRA!!!</h3></div>";
                                 } else {
                                     echo "<br><div class='answer text-warning'><i class='glyphicon glyphicon-warning-sign'></i><a class='answer-anchor' onclick='showButtonsWhenUncertain(this)'>$query</a><h3> er kanskje et ord...</h3></div>";
