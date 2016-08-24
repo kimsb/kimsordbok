@@ -8,8 +8,9 @@ $password = $url["pass"];
 $database = substr($url["path"], 1);
 
 $db_conn = pg_connect("user=$username password=$password host=$host sslmode=require dbname=$database") or die('Could not connect: ' . pg_last_error());
-
 pg_query("SET NAMES 'utf8'");
+
+$word = mb_strtoupper($word, 'UTF-8');
 
 //lagrer originalstatus av ordet
 $sql = "SELECT * FROM dictionary WHERE word = '$word'";
