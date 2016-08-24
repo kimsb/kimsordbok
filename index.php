@@ -149,19 +149,7 @@
     <div class='container'>
         <div class='navbar-header'>
             <a href='/index.php' class='navbar-brand' id="brand-name">Kims Freshe Ordbok</a>
-            <!--<button type='button' class='navbar-toggle'
-                  data-toggle='collapse' data-target='.navbar-collapse'>
-              <span class='sr-only'>Toggle navigation</span>
-              <span class='icon-bar'></span>
-              <span class='icon-bar'></span>
-              <span class='icon-bar'></span>
-            </button>-->
         </div>
-        <!--<ul class='nav navbar-nav navbar-right collapse navbar-collapse'>
-          <li><a href='tickets.html'>Tickets</a></li>
-          <li><a href='stations.html'>Stations</a></li>
-          <li><a href='about.html'>About</a></li>
-        </ul>-->
     </div>
 </div>
 <div class='container'>
@@ -199,8 +187,6 @@
             $anagram = $_POST['anagram'];
 
             $url = parse_url(getenv("DATABASE_URL"));
-
-
             $host = $url["host"];
             $username = $url["user"];
             $password = $url["pass"];
@@ -408,7 +394,8 @@
                                 echo "invalid query (* in middle of word)";
                             }
                         } else { //sjekke et enkelt ord
-                            $sql = "SELECT * FROM dictionary WHERE word = '$query'";
+                            $upperQuery = mb_strtoupper($query, 'UTF-8');
+                            $sql = "SELECT * FROM dictionary WHERE word = '$upperQuery'";
                             $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
                             if (pg_numrows($result) === 0) {
                                 echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
