@@ -1,7 +1,7 @@
 <?php
 $word = $_POST['word'];
 
-$url = parse_url(getenv("DATABASE_URL"));
+$url = parse_url(getenv("HEROKU_POSTGRESQL_AQUA_URL"));
 $host = $url["host"];
 $username = $url["user"];
 $password = $url["pass"];
