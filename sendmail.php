@@ -89,12 +89,15 @@ if (pg_numrows($beforeChanges) !== 0) {
     //send mail
     //$to = 'kimbovim@gmail.com, tom.bovim@haugen-gruppen.no';
     $email = new SendGrid\Email();
-    $email->addTo('kbovim@hotmail.com')
+    $email->addTo('kimbovim@gmail.com')
         ->setFrom('kimbovim@gmail.com')
-        ->setSubject('Oppadteringer')
+        ->setSubject('Oppdateringer i ordboka')
         ->setText($message);
 
     $status = $sendgrid->send($email);
+
+    echo "<br><h3>status: $status</h3>";
+    echo "<br><h3>status->message: $status->message</h3>";
 
     //lagrer mailen i databasen
     date_default_timezone_set("Europe/Oslo");
