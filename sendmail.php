@@ -96,7 +96,6 @@ if (pg_numrows($beforeChanges) !== 0) {
 
     $status = $sendgrid->send($email);
 
-    echo "<br><h3>status: $status</h3>";
     echo "<br><h3>status->message: $status->message</h3>";
 
     //lagrer mailen i databasen
