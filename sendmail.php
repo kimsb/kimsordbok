@@ -94,19 +94,15 @@ if (pg_numrows($beforeChanges) !== 0) {
         ->setSubject('Oppdateringer i ordboka')
         ->setText($message);
 
-    $status = $sendgrid->send($email);
-
-    echo "<br><h3>status->message: $status->message</h3>";
+    $sendgrid->send($email);
 
     //lagrer mailen i databasen
     date_default_timezone_set("Europe/Oslo");
     $timestamp = date("Y m j H:i:s");
-    $sql = "INSERT INTO mailarchive (timestamp, mail, status) VALUES ('$timestamp', '$message', '$status->message')";
+    $sql = "INSERT INTO mailarchive (timestamp, mail) VALUES ('$timestamp', '$message')";
     pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
-    if ($status->message === 'success') {
-        $sql = "TRUNCATE beforechanges";
-        pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
-    }
+    $sql = "TRUNCATE beforechanges";
+    pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 }
 ?>
