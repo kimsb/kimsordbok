@@ -22,10 +22,10 @@ $deletedArray = array();
 $sql = "SELECT * FROM beforechanges";
 $beforeChanges = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 if (pg_numrows($beforeChanges) !== 0) {
-    while ($before = mysql_fetch_array($beforeChanges)) {
+    while ($before = pg_fetch_array($beforeChanges)) {
         $dictionarySql = "SELECT * FROM dictionary WHERE word = '$before[word]'";
-        $dictionaryResult = mysql_query($dictionarySql, $mysql_connection);
-        if (mysql_num_rows($dictionaryResult) !== 0) {
+        $dictionaryResult = pg_exec($db_conn, $dictionarySql) or die('Query failed: ' . pg_last_error());
+        if (pg_numrows($dictionaryResult) !== 0) {
             $now = pg_fetch_array($dictionaryResult);
             if ($now['isvalid'] === 't') { //now = valid
                 if ($before['status'] === "uncertain") {
