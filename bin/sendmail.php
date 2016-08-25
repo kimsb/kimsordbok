@@ -87,9 +87,8 @@ if (pg_numrows($beforeChanges) !== 0) {
     $message .= "\r\n\r\nKim";
 
     //send mail
-    //$to = 'kimbovim@gmail.com, tom.bovim@haugen-gruppen.no';
     $email = new SendGrid\Email();
-    $email->addTo('kimbovim@gmail.com')
+    $email->addTo('kimbovim@gmail.com, tom.bovim@haugen-gruppen.no')
         ->setFrom('kimbovim@gmail.com')
         ->setSubject('Oppdateringer i ordboka')
         ->setText($message);
