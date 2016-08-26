@@ -1,5 +1,5 @@
 <?php
-require "twitteroauth/autoload.php";
+require "vendor/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 $url = parse_url(getenv("HEROKU_POSTGRESQL_AQUA_URL"));
