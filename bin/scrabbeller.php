@@ -40,18 +40,18 @@ function perform_diff()
         while ($row = pg_fetch_array($result)) {
             $contents = file_get_contents($row[url]);
             if ($contents !== FALSE) {
-                $newscore = str_replace(',', '.', get_string_between($contents, "Rating:</span> ", "<br />"));
-                if (strcmp($row[score], $newscore) != 0) {
-                    $update = "UPDATE scrabbeller SET score='$newscore'";
+                $newrating = str_replace(',', '.', get_string_between($contents, "Rating:</span> ", "<br />"));
+                if (strcmp($row[rating], $newrating) != 0) {
+                    $update = "UPDATE scrabbeller SET rating='$newrating'";
                     pg_exec($db_conn, $update) or die('Query failed: ' . pg_last_error());
 
                     $message = "Hei, det har akkurat skjedd en endring i ratingen din på Scrabbeller!<br><br>";
-                    $scorediff = $newscore - $row[score];
-                    if ($scorediff > 0) {
-                        $message .= "Godt jobba! Du har gått opp $scorediff poeng!<br><br>";
+                    $ratingdiff = $newrating - $row[rating];
+                    if ($ratingdiff > 0) {
+                        $message .= "Godt jobba! Du har gått opp $ratingdiff poeng!<br><br>";
                     } else {
-                        $scorediff = abs($scorediff);
-                        $message .= "Auda, du har gått ned $scorediff poeng...<br><br>";
+                        $ratingdiff = abs($ratingdiff);
+                        $message .= "Auda, du har gått ned $ratingdiff poeng...<br><br>";
                     }
                     $message .= "Gå til <a href='" . $row[url] . "'>Scrabbeller</a> for å se alle oppdateringer.";
                     send_notification_email($row[email], $message);
