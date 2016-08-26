@@ -42,7 +42,7 @@ function perform_diff()
             if ($contents !== FALSE) {
                 $newrating = str_replace(',', '.', get_string_between($contents, "Rating:</span> ", "<br />"));
                 if (strcmp($row[rating], $newrating) != 0) {
-                    $update = "UPDATE scrabbeller SET rating='$newrating'";
+                    $update = "UPDATE scrabbeller SET rating='$newrating' WHERE email = '" . $row[email] . "'";
                     pg_exec($db_conn, $update) or die('Query failed: ' . pg_last_error());
 
                     $message = "Hei, det har akkurat skjedd en endring i ratingen din på Scrabbeller!<br><br>";
