@@ -8,7 +8,7 @@ function send_notification_email($receiver, $message)
     $email->addTo($receiver)
         ->setFrom('kimbovim@gmail.com')
         ->setSubject('Scrabbeller er oppdatert!')
-        ->setText($message);
+        ->setHtml($message);
 
     $sendgrid->send($email);
 }
