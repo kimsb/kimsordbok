@@ -13,7 +13,7 @@
             var word = a.innerHTML;
             $.ajax({
                 type: "POST",
-                url: "makeUncertain.php",
+                url: "bin/makeUncertain.php",
                 data: "word=" + word,
                 success: function (data) {
                     console.log("success! :");
@@ -33,7 +33,7 @@
             var word = a.innerHTML;
             $.ajax({
                 type: "POST",
-                url: "makeValid.php",
+                url: "bin/makeValid.php",
                 data: "word=" + word,
                 success: function (data) {
                     console.log("success! :");
@@ -113,7 +113,7 @@
             console.log(word);
             $.ajax({
                 type: "POST",
-                url: "addWord.php",
+                url: "bin/addWord.php",
                 data: "word=" + word,
                 success: function (data) {
                     console.log("success! :");
@@ -128,7 +128,7 @@
             var word = a.innerHTML;
             $.ajax({
                 type: "POST",
-                url: "deleteWord.php",
+                url: "bin/deleteWord.php",
                 data: "word=" + word,
                 success: function (data) {
                     console.log("success! :");
