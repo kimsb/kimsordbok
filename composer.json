@@ -1,6 +1,7 @@
 {
   "require": {
     "ext-mbstring": "*",
-    "sendgrid/sendgrid": "~4.0"
+    "sendgrid/sendgrid": "~4.0",
+    "abraham/twitteroauth": "^0.6.4"
   }
 }
