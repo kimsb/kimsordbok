@@ -89,7 +89,7 @@ if (pg_numrows($beforeChanges) !== 0) {
     $mailSql = "SELECT * FROM scrabbeller";
     $mailResult = pg_exec($db_conn, $mailSql) or die('Query failed: ' . pg_last_error());
     if (pg_numrows($mailResult) !== 0) {
-        $sender = $row[email];
+        $sender = pg_fetch_result($mailResult, 0, "email");
         while ($row = pg_fetch_array($mailResult)) {
             //send mail
             $email = new SendGrid\Email();

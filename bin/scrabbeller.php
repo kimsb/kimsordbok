@@ -1,12 +1,12 @@
 <?php
 require 'vendor/autoload.php';
 
-function send_notification_email($receiver, $message)
+function send_notification_email($sender, $receiver, $message)
 {
     $sendgrid = new SendGrid(getenv("SENDGRID_USERNAME"), getenv("SENDGRID_PASSWORD"));
     $email = new SendGrid\Email();
     $email->addTo($receiver)
-        ->setFrom('kimbovim@gmail.com')
+        ->setFrom($sender)
         ->setSubject('Scrabbeller er oppdatert!')
         ->setHtml($message);
 
@@ -37,6 +37,7 @@ function perform_diff()
     $sql = "SELECT * FROM scrabbeller";
     $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
     if (pg_numrows($result) !== 0) {
+        $sender = pg_fetch_result($result, 0, "email");
         while ($row = pg_fetch_array($result)) {
             $contents = file_get_contents($row[url]);
             if ($contents !== FALSE) {
@@ -54,7 +55,7 @@ function perform_diff()
                         $message .= "Auda, du har gått ned $ratingdiff poeng...<br><br>";
                     }
                     $message .= "Gå til <a href='" . $row[url] . "'>Scrabbeller</a> for å se alle oppdateringer.";
-                    send_notification_email($row[email], $message);
+                    send_notification_email($sender, $row[email], $message);
                 }
             }
         }
