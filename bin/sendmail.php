@@ -86,7 +86,7 @@ if (pg_numrows($beforeChanges) !== 0) {
     }
     $message .= "\r\n\r\nKim";
 
-    $mailSql = "SELECT * FROM scrabbeller";
+    $mailSql = "SELECT * FROM scrabbeller ORDER BY id";
     $mailResult = pg_exec($db_conn, $mailSql) or die('Query failed: ' . pg_last_error());
     if (pg_numrows($mailResult) !== 0) {
         $sender = pg_fetch_result($mailResult, 0, "email");

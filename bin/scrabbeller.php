@@ -34,10 +34,10 @@ function perform_diff()
     $db_conn = pg_connect("user=$username password=$password host=$host sslmode=require dbname=$database") or die('Could not connect: ' . pg_last_error());
     pg_query("SET NAMES 'utf8'");
 
-    $sql = "SELECT * FROM scrabbeller";
+    $sql = "SELECT * FROM scrabbeller ORDER BY id";
     $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
     if (pg_numrows($result) !== 0) {
-        $sender = pg_fetch_result($result, 0, "email");
+        $sender = pg_fetch_result($result, 0, "id");
         while ($row = pg_fetch_array($result)) {
             $contents = file_get_contents($row[url]);
             if ($contents !== FALSE) {
