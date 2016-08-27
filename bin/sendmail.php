@@ -47,7 +47,7 @@ if (pg_numrows($beforeChanges) !== 0) {
         }
     }
 
-    //fyller mailtekst
+//fyller mailtekst
     $message = "God morgen, det har blitt gjort endringer i ordlisten!\r\n";
     if (!empty($newArray)) {
         sort($newArray);
@@ -86,14 +86,21 @@ if (pg_numrows($beforeChanges) !== 0) {
     }
     $message .= "\r\n\r\nKim";
 
-    //send mail
-    $email = new SendGrid\Email();
-    $email->addTo('kimbovim@gmail.com, tom.bovim@haugen-gruppen.no')
-        ->setFrom('kimbovim@gmail.com')
-        ->setSubject('Oppdateringer i ordboka')
-        ->setText($message);
+    $mailSql = "SELECT * FROM scrabbeller";
+    $mailResult = pg_exec($db_conn, $mailSql) or die('Query failed: ' . pg_last_error());
+    if (pg_numrows($mailResult) !== 0) {
+        $sender = $row[email];
+        while ($row = pg_fetch_array($mailResult)) {
+            //send mail
+            $email = new SendGrid\Email();
+            $email->addTo($row[email])
+                ->setFrom($sender)
+                ->setSubject('Oppdateringer i ordboka')
+                ->setText($message);
 
-    $sendgrid->send($email);
+            $sendgrid->send($email);
+        }
+    }
 
     //lagrer mailen i databasen
     date_default_timezone_set("Europe/Oslo");
