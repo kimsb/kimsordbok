@@ -37,7 +37,7 @@ function perform_diff()
     $sql = "SELECT * FROM scrabbeller ORDER BY id";
     $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
     if (pg_numrows($result) !== 0) {
-        $sender = pg_fetch_result($result, 0, "id");
+        $sender = pg_fetch_result($result, 0, "email");
         while ($row = pg_fetch_array($result)) {
             $contents = file_get_contents($row[url]);
             if ($contents !== FALSE) {
