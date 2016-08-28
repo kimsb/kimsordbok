@@ -12,20 +12,23 @@ pg_query("SET NAMES 'utf8'");
 
 $word = mb_strtoupper($word, 'UTF-8');
 
+$intable = pg_exec($db_conn, "SELECT * FROM beforechanges WHERE word='$word'") or die('Query failed: ' . pg_last_error());
+if (pg_numrows($intable) === 0) {
 //lagrer originalstatus av ordet
-$sql = "SELECT * FROM dictionary WHERE word = '$word'";
-$status = "notPresent";
-$result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
-if (pg_numrows($result) !== 0) {
-    $row = pg_fetch_array($result);
-    if ($row[isvalid] === 't') {
-        $status = "valid";
-    } else {
-        $status = "uncertain";
+    $sql = "SELECT * FROM dictionary WHERE word = '$word'";
+    $status = "notPresent";
+    $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
+    if (pg_numrows($result) !== 0) {
+        $row = pg_fetch_array($result);
+        if ($row[isvalid] === 't') {
+            $status = "valid";
+        } else {
+            $status = "uncertain";
+        }
     }
+    $sql = "INSERT INTO beforechanges (word, status) VALUES ('$word', '$status')";
+    pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 }
-$sql = "INSERT INTO beforechanges (word, status) VALUES ('$word', '$status')";
-pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
 
 //lagrer endringen
 date_default_timezone_set("Europe/Oslo");
