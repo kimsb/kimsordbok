@@ -48,43 +48,43 @@ if (pg_numrows($beforeChanges) !== 0) {
     }
 
 //fyller mailtekst
-    $message = "God morgen, det har blitt gjort endringer i ordlisten!\r\n";
+    $message = "God morgen, det har blitt gjort endringer i ordlisten!<br>";
     if (!empty($newArray)) {
         sort($newArray);
-        $message .= "\r\nNye ord:\r\n";
+        $message .= "<br>Nye ord:<br>";
         foreach ($newArray as $newWord) {
-            $message .= "$newWord\r\n";
+            $message .= "$newWord<br>";
         }
     }
     if (!empty($yesArray)) {
         sort($yesArray);
-        $message .= "\r\nOrd som har blitt godkjent:\r\n";
+        $message .= "<br>Ord som har blitt godkjent:<br>";
         foreach ($yesArray as $yesWord) {
-            $message .= "$yesWord\r\n";
+            $message .= "$yesWord<br>";
         }
     }
     if (!empty($newUncertainArray)) {
         sort($newUncertainArray);
-        $message .= "\r\nNye ord med status 'usikker':\r\n";
+        $message .= "<br>Nye ord med status 'usikker':<br>";
         foreach ($newUncertainArray as $newUncertainWord) {
-            $message .= "$newUncertainWord\r\n";
+            $message .= "$newUncertainWord<br>";
         }
     }
     if (!empty($maybeArray)) {
         sort($maybeArray);
-        $message .= "\r\nOrd som har fått status 'usikker':\r\n";
+        $message .= "<br>Ord som har fått status 'usikker':<br>";
         foreach ($maybeArray as $maybeWord) {
-            $message .= "$maybeWord\r\n";
+            $message .= "$maybeWord<br>";
         }
     }
     if (!empty($deletedArray)) {
         sort($deletedArray);
-        $message .= "\r\nOrd som er slettet fra listen:\r\n";
+        $message .= "<br>Ord som er slettet fra listen:<br>";
         foreach ($deletedArray as $deletedWord) {
-            $message .= "$deletedWord\r\n";
+            $message .= "$deletedWord<br>";
         }
     }
-    $message .= "\r\n\r\nKim";
+    $message .= "<br><br>Kim";
 
     $mailSql = "SELECT * FROM scrabbeller";
     $mailResult = pg_exec($db_conn, $mailSql) or die('Query failed: ' . pg_last_error());
@@ -95,7 +95,7 @@ if (pg_numrows($beforeChanges) !== 0) {
             $email->addTo($row[email])
                 ->setFrom(getenv("MAIL_SENDER_ADDRESS"))
                 ->setSubject('Oppdateringer i ordboka')
-                ->setText($message);
+                ->setHtml($message);
 
             $sendgrid->send($email);
         }
