@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+//require 'vendor/autoload.php';
 
 function send_notification_email($receiver, $message)
 {
@@ -37,25 +37,39 @@ function perform_diff()
     $sql = "SELECT * FROM scrabbeller";
     $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
     if (pg_numrows($result) !== 0) {
-        while ($row = pg_fetch_array($result)) {
-            $contents = file_get_contents($row[url]);
-            if ($contents !== FALSE) {
-                $newrating = str_replace(',', '.', get_string_between($contents, "Rating:</span> ", "<br />"));
-                if (strcmp($row[rating], $newrating) != 0) {
-                    $update = "UPDATE scrabbeller SET rating='$newrating' WHERE email = '" . $row[email] . "'";
-                    pg_exec($db_conn, $update) or die('Query failed: ' . pg_last_error());
 
-                    $message = "Hei, det har akkurat skjedd en endring i ratingen din på Scrabbeller!<br><br>";
-                    $ratingdiff = $newrating - $row[rating];
-                    if ($ratingdiff > 0) {
-                        $message .= "Godt jobba! Du har gått opp $ratingdiff poeng!<br><br>";
-                    } else {
-                        $ratingdiff = abs($ratingdiff);
-                        $message .= "Auda, du har gått ned $ratingdiff poeng...<br><br>";
-                    }
-                    $message .= "Gå til <a href='" . $row[url] . "'>Scrabbeller</a> for å se alle oppdateringer.";
-                    send_notification_email($row[email], $message);
+        $htmlpage = file_get_contents(getenv("SCRABBELLER_URL"));
+
+        while ($row = pg_fetch_array($result)) {
+
+            $before_name = substr($htmlpage, 0, stripos($htmlpage, $row[name]));
+            $newplace = get_string_between(substr($before_name, strripos($before_name, "number")), "> ", " <");
+            $id = get_string_between(substr($before_name, strripos($before_name, "spiller")), "id=", "\">");
+            $after_name = substr($htmlpage, stripos($htmlpage, $row[name]));
+            $newrating = str_replace(',', '.', get_string_between($after_name, "number\">", "<"));
+
+            if (strcmp($row[rating], $newrating) != 0 || strcmp($row[place], $newplace) != 0) {
+                $update = "UPDATE scrabbeller SET rating='$newrating', place='$newplace' WHERE email = '" . $row[email] . "'";
+                pg_exec($db_conn, $update) or die('Query failed: ' . pg_last_error());
+
+                $message = "Hei, det har akkurat skjedd en endring på Scrabbeller!<br><br>";
+                $ratingdiff = $newrating - $row[rating];
+                if ($ratingdiff > 0) {
+                    $message .= "Godt jobba! Du har gått opp $ratingdiff poeng, til $newrating!<br><br>";
+                } else if ($ratingdiff < 0) {
+                    $ratingdiff = abs($ratingdiff);
+                    $message .= "Auda, du har gått ned $ratingdiff poeng, til $newrating...<br><br>";
                 }
+                $placediff = $newplace - $row[place];
+                if ($placediff > 0) {
+                    $message .= "Du har gått opp $placediff plasser, til $newplace!<br><br>";
+                } else if ($placediff < 0) {
+                    $placediff = abs($placediff);
+                    $message .= "Du har gått ned $placediff plasser, til $newplace.<br><br>";
+                }
+
+                $message .= "Gå til <a href='" . getenv("SCRABBELLER_SPILLER_URL") . "$id'>Scrabbeller</a> for å se alle oppdateringer.";
+                send_notification_email($row[email], $message);
             }
         }
     }
