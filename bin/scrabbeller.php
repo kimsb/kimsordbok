@@ -61,10 +61,10 @@ function perform_diff()
                     $message .= "Auda, du har gått ned $ratingdiff poeng, til $newrating...<br><br>";
                 }
                 $placediff = $newplace - $row[place];
-                if ($placediff > 0) {
-                    $message .= "Du har gått opp $placediff plasser, til $newplace!<br><br>";
-                } else if ($placediff < 0) {
+                if ($placediff < 0) {
                     $placediff = abs($placediff);
+                    $message .= "Du har gått opp $placediff plasser, til $newplace!<br><br>";
+                } else if ($placediff > 0) {
                     $message .= "Du har gått ned $placediff plasser, til $newplace.<br><br>";
                 }
 
