@@ -63,12 +63,12 @@ function perform_diff()
                 $placediff = $newplace - $row[place];
                 if ($placediff < 0) {
                     $placediff = abs($placediff);
-                    $message .= "Du har gått opp $placediff plasser, til $newplace!<br><br>";
+                    $message .= "Du har gått opp $placediff plasser, til $newplace. plass!<br><br>";
                 } else if ($placediff > 0) {
-                    $message .= "Du har gått ned $placediff plasser, til $newplace.<br><br>";
+                    $message .= "Du har gått ned $placediff plasser, til $newplace. plass.<br><br>";
                 }
 
-                $message .= "Gå til <a href='" . getenv("SCRABBELLER_SPILLER_URL") . "$id'>Scrabbeller</a> for å se alle oppdateringer.";
+                $message .= "Gå til <a href='" . getenv("SCRABBELLER_SPILLER_URL") . "$id'>Scrabbeller</a> for å se alle oppdateringer.<br><br>Kim";
                 send_notification_email($row[email], $message);
             }
         }
