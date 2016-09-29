@@ -65,14 +65,14 @@ if (pg_numrows($beforeChanges) !== 0) {
     }
     if (!empty($newUncertainArray)) {
         sort($newUncertainArray);
-        $message .= "<br>Nye ord med status 'usikker':<br>";
+        $message .= "<br>Nye ord med status = usikker:<br>";
         foreach ($newUncertainArray as $newUncertainWord) {
             $message .= "$newUncertainWord<br>";
         }
     }
     if (!empty($maybeArray)) {
         sort($maybeArray);
-        $message .= "<br>Ord som har fått status 'usikker':<br>";
+        $message .= "<br>Ord som har fått status = usikker:<br>";
         foreach ($maybeArray as $maybeWord) {
             $message .= "$maybeWord<br>";
         }
