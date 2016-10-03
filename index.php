@@ -252,11 +252,10 @@
                 //sjekke alle anagrammer
                 if (isset($_POST['anagram'])) {
 
-                    //$vowels = array("Æ", "Ø", "Å");
-                    //$replacements = array("{", "}", "|");
+                    //siden UTF-8 sorter i rekkefølgen ÅÆØ
+                    $searchvowels = array("Å", "Æ", "Ø");
 
-
-                    $split = mbStringToArray(mb_strtoupper($query, 'UTF-8'));
+                    $split = mbStringToArray(str_replace($searchvowels, $replacements, mb_strtoupper($query, 'UTF-8')));
                     natcasesort($split);
                     $stringWithBlank = implode($split);
                     $list = array();
@@ -264,7 +263,7 @@
 
                     //hvis inneholder blank
                     if ($stringWithBlank[0] == "-") {
-                        $scrabbleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
+                        $scrabbleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ{}|";
                         for ($k = 0; $k < mb_strlen($scrabbleAlphabet); $k++) {
                             $split = mbStringToArray(str_replace("-", $scrabbleAlphabet[$k], $stringWithBlank));
 
@@ -314,6 +313,11 @@
                         }
                         return $lb - $la;
                     }
+
+                    foreach ($list as $index => $entry) {
+                        $list[$index] = str_replace($replacements, $searchvowels, $entry);
+                    }
+
 
                     $sql = "SELECT * FROM dictionary WHERE alpha IN ('" . implode("','", $list) . "')";
 
