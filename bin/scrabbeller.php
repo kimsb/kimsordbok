@@ -53,7 +53,7 @@ function perform_diff()
                 pg_exec($db_conn, $update) or die('Query failed: ' . pg_last_error());
 
                 $message = "Hei, det har akkurat skjedd en endring på Scrabbeller!<br><br>";
-                $ratingdiff = $newrating - $row[rating];
+                $ratingdiff = round($newrating - $row[rating], 2);
                 if ($ratingdiff > 0) {
                     $message .= "Godt jobba! Du har gått opp $ratingdiff poeng, til $newrating!<br><br>";
                 } else if ($ratingdiff < 0) {
