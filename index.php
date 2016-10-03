@@ -340,71 +340,64 @@
                     usort($maybeArray, 'lensort');
 
                 } else { //hvis ikke anagram
-                    if ($query === "åa") {
-                        echo "<br><div class='answer text-success'><i class='glyphicon glyphicon-ok-sign'></i><a class='answer-anchor'>$query</a><h3> ble funnet, HURRA!!!</h3></div>";
-                    } else {
-
-                        $startsWithStar = startsWith($query, "*");
-                        $endsWithStar = endsWith($query, "*");
-                        // hvis søket starter/slutter med stjerne
-                        if ($startsWithStar || $endsWithStar) {
-                            $validQuery = true;
-                            for ($i = 1; $i < mb_strlen($query) - 1; $i++) {
-                                if ($query[$i] === "*") {
-                                    $validQuery = false;
-                                }
+                    $startsWithStar = startsWith($query, "*");
+                    $endsWithStar = endsWith($query, "*");
+                    // hvis søket starter/slutter med stjerne
+                    if ($startsWithStar || $endsWithStar) {
+                        $validQuery = true;
+                        for ($i = 1; $i < mb_strlen($query) - 1; $i++) {
+                            if ($query[$i] === "*") {
+                                $validQuery = false;
                             }
-                            if ($validQuery) {
-                                $likeQuery = str_replace("*", "%", mb_strtoupper($query, 'UTF-8'));
-                                $queryNeedle = str_replace("*", "", mb_strtoupper($query, 'UTF-8'));
-                                $sql = "SELECT * FROM dictionary WHERE word like '$likeQuery'";
-                                $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
-                                if (pg_numrows($result) !== 0) {
-                                    while ($row = pg_fetch_array($result)) {
-                                        if ($row[isvalid] === 't') {
-                                            if ($startsWithStar && endsWith($row[word], $queryNeedle) ||
-                                                $endsWithStar && startsWith($row[word], $queryNeedle) ||
-                                                ($startsWithStar && $endsWithStar && stristr($row[word], $queryNeedle))
-                                            ) {
-                                                $yesArray[] = str_replace($vowels, $replacements, $row[word]);
-                                            }
+                        }
+                        if ($validQuery) {
+                            $likeQuery = str_replace("*", "%", mb_strtoupper($query, 'UTF-8'));
+                            $queryNeedle = str_replace("*", "", mb_strtoupper($query, 'UTF-8'));
+                            $sql = "SELECT * FROM dictionary WHERE word like '$likeQuery'";
+                            $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
+                            if (pg_numrows($result) !== 0) {
+                                while ($row = pg_fetch_array($result)) {
+                                    if ($row[isvalid] === 't') {
+                                        if ($startsWithStar && endsWith($row[word], $queryNeedle) ||
+                                            $endsWithStar && startsWith($row[word], $queryNeedle) ||
+                                            ($startsWithStar && $endsWithStar && stristr($row[word], $queryNeedle))
+                                        ) {
+                                            $yesArray[] = str_replace($vowels, $replacements, $row[word]);
+                                        }
 
-                                        } else {
-                                            if ($startsWithStar && endsWith($row[word], $queryNeedle) ||
-                                                $endsWithStar && startsWith($row[word], $queryNeedle) ||
-                                                ($startsWithStar && $endsWithStar && stristr($row[word], $queryNeedle))
-                                            ) {
-                                                $maybeArray[] = str_replace($vowels, $replacements, $row[word]);
-                                            }
+                                    } else {
+                                        if ($startsWithStar && endsWith($row[word], $queryNeedle) ||
+                                            $endsWithStar && startsWith($row[word], $queryNeedle) ||
+                                            ($startsWithStar && $endsWithStar && stristr($row[word], $queryNeedle))
+                                        ) {
+                                            $maybeArray[] = str_replace($vowels, $replacements, $row[word]);
                                         }
                                     }
-                                    usort($yesArray, 'lensortIncreasing');
-                                    usort($maybeArray, 'lensortIncreasing');
-                                } else {
-                                    echo "<br><h3>søket gir ingen treff...</h3>";
                                 }
+                                usort($yesArray, 'lensortIncreasing');
+                                usort($maybeArray, 'lensortIncreasing');
                             } else {
-                                echo "invalid query (* in middle of word)";
+                                echo "<br><h3>søket gir ingen treff...</h3>";
                             }
-                        } else { //sjekke et enkelt ord
-                            $upperQuery = mb_strtoupper($query, 'UTF-8');
-                            $sql = "SELECT * FROM dictionary WHERE word = '$upperQuery'";
-                            $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
-                            if (pg_numrows($result) === 0) {
-                                echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
+                        } else {
+                            echo "invalid query (* in middle of word)";
+                        }
+                    } else { //sjekke et enkelt ord
+                        $upperQuery = mb_strtoupper($query, 'UTF-8');
+                        $sql = "SELECT * FROM dictionary WHERE word = '$upperQuery'";
+                        $result = pg_exec($db_conn, $sql) or die('Query failed: ' . pg_last_error());
+                        if (pg_numrows($result) === 0) {
+                            echo "<br><div class='answer text-danger'><i class='glyphicon glyphicon-remove-sign'></i><a class='answer-anchor' onclick='showAddButton(this)'>$query</a><h3> er ikke i listen..</h3></div>";
+                        } else {
+                            $row = pg_fetch_array($result);
+                            if ($row[isvalid] === 't') {
+                                echo "<br><div class='answer text-success'><i class='glyphicon glyphicon-ok-sign'></i><a class='answer-anchor' onclick='showButtonsWhenValid(this)'>$query</a><h3> ble funnet, HURRA!!!</h3></div>";
                             } else {
-                                $row = pg_fetch_array($result);
-                                if ($row[isvalid] === 't') {
-                                    echo "<br><div class='answer text-success'><i class='glyphicon glyphicon-ok-sign'></i><a class='answer-anchor' onclick='showButtonsWhenValid(this)'>$query</a><h3> ble funnet, HURRA!!!</h3></div>";
-                                } else {
-                                    echo "<br><div class='answer text-warning'><i class='glyphicon glyphicon-warning-sign'></i><a class='answer-anchor' onclick='showButtonsWhenUncertain(this)'>$query</a><h3> er kanskje et ord...</h3></div>";
-                                }
+                                echo "<br><div class='answer text-warning'><i class='glyphicon glyphicon-warning-sign'></i><a class='answer-anchor' onclick='showButtonsWhenUncertain(this)'>$query</a><h3> er kanskje et ord...</h3></div>";
                             }
                         }
                     }
                 }
-
-
             }
             ?>
 
