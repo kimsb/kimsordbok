@@ -332,12 +332,6 @@
                         }
                     }
                     $str = mb_strtoupper($query, 'UTF-8');
-                    //spesialtilfellet ÅA
-                    if ((strpos($str, 'Å') !== FALSE && strpos($str, 'A') !== FALSE) ||
-                        (strpos($str, '-') !== FALSE && (strpos($str, 'Å') !== FALSE || strpos($str, 'A') !== FALSE))
-                    ) {
-                        $yesArray[] = "ÅA";
-                    }
                     if (count($yesArray) === 0 && count($maybeArray) === 0) {
                         echo "<br><h3>$query gir ingen anagrammer...</h3>";
                     }
