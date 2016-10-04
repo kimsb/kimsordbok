@@ -25,7 +25,7 @@ function get_string_between($string, $start, $end)
 
 $htmlpage = file_get_contents(getenv("SCRABBLEFORBUNDET_URL"));
 $dagensord = get_string_between($htmlpage, "<b>Dagens ord<b></h3>", "</li>");
-$message = "<h2>Dagens ord fra NSF:</h2><br><br>>";
+$message = "<p>Dagens ord fra NSF:</p><br>";
 $message .= $dagensord . ".<br><br>Kim";
 send_notification_email(getenv("MAIL_SENDER_ADDRESS"), $message);
 
