@@ -27,6 +27,6 @@ $htmlpage = file_get_contents(getenv("SCRABBLEFORBUNDET_URL"));
 $dagensord = get_string_between($htmlpage, "<b>Dagens ord<b></h3>", "</li>");
 $message = "<p>Dagens ord fra NSF:</p><br>";
 $message .= trim($dagensord) . ".<br><br>Kim";
-send_notification_email(getenv("MAIL_SENDER_ADDRESS"), $message);
+send_notification_email(getenv("DAGENS_ORD_RECIPIENTS"), $message);
 
 ?>
