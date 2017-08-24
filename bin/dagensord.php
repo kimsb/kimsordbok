@@ -30,7 +30,7 @@ $message .= trim($dagensord) . ".<br><br>Kim";
 
 $recipients = explode(", ", getenv("DAGENS_ORD_RECIPIENTS"));
 foreach ($recipients as $recipient) {
-    send_notification_email(getenv($recipient), $message);
+    send_notification_email($recipient, $message);
 }
 
 ?>
