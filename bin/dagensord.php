@@ -22,9 +22,10 @@ function get_string_between($string, $start, $end)
     $len = strpos($string, $end, $ini) - $ini;
     return substr($string, $ini, $len);
 }
-
-$htmlpage = file_get_contents(getenv("SCRABBLEFORBUNDET_URL"));
-$dagensord = get_string_between($htmlpage, "<b>Dagens ord<b></h3>", "</li>");
+while (empty($dagensord)) {
+    $htmlpage = file_get_contents(getenv("SCRABBLEFORBUNDET_URL"));
+    $dagensord = get_string_between($htmlpage, "<b>Dagens ord<b></h3>", "</li>");
+}
 $message = "<p>Dagens ord fra NSF:</p><br>";
 $message .= trim($dagensord) . ".<br><br>Kim";
 
