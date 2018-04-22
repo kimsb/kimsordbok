@@ -42,7 +42,7 @@ function perform_diff()
 
         while ($row = pg_fetch_array($result)) {
 
-            $before_name = substr($htmlpage, 0, stripos($htmlpage, ">$row[name]""));
+            $before_name = substr($htmlpage, 0, stripos($htmlpage, ('>'.$row[name])));
             $newplace = get_string_between(substr($before_name, strripos($before_name, "number")), "> ", " <");
             $id = get_string_between(substr($before_name, strripos($before_name, "spiller")), "id=", "\">");
             $after_name = substr($htmlpage, stripos($htmlpage, ('>'.$row[name])));
