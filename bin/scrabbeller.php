@@ -48,6 +48,9 @@ function perform_diff()
             $after_name = substr($htmlpage, stripos($htmlpage, $row[name]));
             $newrating = str_replace(',', '.', get_string_between($after_name, "number\">", "<"));
 
+            echo "$row[name]: rating: $row[rating], new rating: $newrating";
+            echo "$row[name]: place: $row[place], new place: $newplace";
+
             if (strcmp($row[rating], $newrating) != 0 || strcmp($row[place], $newplace) != 0) {
                 $update = "UPDATE scrabbeller SET rating='$newrating', place='$newplace' WHERE email = '" . $row[email] . "'";
                 pg_exec($db_conn, $update) or die('Query failed: ' . pg_last_error());
