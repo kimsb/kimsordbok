@@ -15,6 +15,9 @@ function send_notification_email($receiver, $message)
 
 function get_string_between($string, $start, $end)
 {
+
+    echo "string: $string, start: $start, end: $end";
+
     $string = " " . $string;
     $ini = strpos($string, $start);
     if ($ini == 0) return "";
@@ -48,9 +51,12 @@ function perform_diff()
             $after_name = substr($htmlpage, stripos($htmlpage, ('>'.$row[name])));
             $newrating = str_replace(',', '.', get_string_between($after_name, "number\">", "<"));
 
-            echo "$row[name]: rating: $row[rating], new rating: $newrating";
-            echo "$row[name]: place: $row[place], new place: $newplace";
-            echo "$row[name]: id: $id";
+            echo "$row[name]: rating: $row[rating], new rating: $newrating\n";
+            echo "$row[name]: place: $row[place], new place: $newplace\n";
+            echo "$row[name]: id: $id\n;
+
+            echo ""
+
 
             if (strcmp($row[rating], $newrating) != 0 || strcmp($row[place], $newplace) != 0) {
                 $update = "UPDATE scrabbeller SET rating='$newrating', place='$newplace' WHERE email = '" . $row[email] . "'";
