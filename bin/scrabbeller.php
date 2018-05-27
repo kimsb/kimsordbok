@@ -15,9 +15,6 @@ function send_notification_email($receiver, $message)
 
 function get_string_between($string, $start, $end)
 {
-
-    echo "\nstring: $string, start: $start, end: $end\n ";
-
     $string = " " . $string;
     $ini = strpos($string, $start);
     if ($ini == 0) return "";
