@@ -16,7 +16,7 @@ function send_notification_email($receiver, $message)
 function get_string_between($string, $start, $end)
 {
 
-    echo "\nstring: $string, start: $start, end: $end\n";
+    echo "\nstring: $string, start: $start, end: $end\n ";
 
     $string = " " . $string;
     $ini = strpos($string, $start);
@@ -53,7 +53,7 @@ function perform_diff()
 
             echo "$row[name]: rating: $row[rating], new rating: $newrating\n";
             echo "$row[name]: place: $row[place], new place: $newplace\n";
-            echo "$row[name]: id: $id\n;
+            echo "$row[name]: id: $id\n";
 
             if (strcmp($row[rating], $newrating) != 0 || strcmp($row[place], $newplace) != 0) {
                 $update = "UPDATE scrabbeller SET rating='$newrating', place='$newplace' WHERE email = '" . $row[email] . "'";
