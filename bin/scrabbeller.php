@@ -50,6 +50,7 @@ function perform_diff()
 
             echo "$row[name]: rating: $row[rating], new rating: $newrating";
             echo "$row[name]: place: $row[place], new place: $newplace";
+            echo "$row[name]: id: $id";
 
             if (strcmp($row[rating], $newrating) != 0 || strcmp($row[place], $newplace) != 0) {
                 $update = "UPDATE scrabbeller SET rating='$newrating', place='$newplace' WHERE email = '" . $row[email] . "'";
