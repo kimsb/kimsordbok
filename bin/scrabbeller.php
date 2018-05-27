@@ -47,7 +47,7 @@ function perform_diff()
 
             $before_name = substr($htmlpage, 0, stripos($htmlpage, ('>'.$row[name])));
             $newplace = get_string_between(substr($before_name, strripos($before_name, "number")), "> ", " <");
-            $id = get_string_between(substr($before_name, strripos($before_name, "spiller")), "id=", "\">");
+            $id = get_string_between(substr($before_name, strripos($before_name, "spiller")), "id=", "\"");
             $after_name = substr($htmlpage, stripos($htmlpage, ('>'.$row[name])));
             $newrating = str_replace(',', '.', get_string_between($after_name, "number\">", "<"));
 
