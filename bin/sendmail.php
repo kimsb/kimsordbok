@@ -2,7 +2,7 @@
 require 'vendor/autoload.php';
 $sendgrid = new SendGrid(getenv("SENDGRID_USERNAME"), getenv("SENDGRID_PASSWORD"));
 
-$url = parse_url(getenv("HEROKU_POSTGRESQL_AQUA_URL"));
+$url = parse_url(getenv("DATABASE_URL"));
 $host = $url["host"];
 $username = $url["user"];
 $password = $url["pass"];

@@ -186,7 +186,7 @@
             $query = $_POST['query'];
             $anagram = $_POST['anagram'];
 
-            $url = parse_url(getenv("HEROKU_POSTGRESQL_AQUA_URL"));
+            $url = parse_url(getenv("DATABASE_URL"));
             $host = $url["host"];
             $username = $url["user"];
             $password = $url["pass"];

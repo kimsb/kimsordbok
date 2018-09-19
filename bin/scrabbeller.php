@@ -25,7 +25,7 @@ function get_string_between($string, $start, $end)
 
 function perform_diff()
 {
-    $url = parse_url(getenv("HEROKU_POSTGRESQL_AQUA_URL"));
+    $url = parse_url(getenv("DATABASE_URL"));
     $host = $url["host"];
     $username = $url["user"];
     $password = $url["pass"];
